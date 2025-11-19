@@ -52,7 +52,7 @@ export default function App() {
   return (
     <>
       <Header />
-      <div className="h-full">
+      <div className="h-full px-20">
         <Outlet />
       </div>
       <Footer />

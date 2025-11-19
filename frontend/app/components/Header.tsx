@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router";
+
 import logo from "../src/assets/logo.png";
 
 const Header = () => {
@@ -7,7 +9,7 @@ const Header = () => {
   return (
     <header>
       <nav className="">
-        <div className="flex justify-between py-3 px-4 bg-yellow-500">
+        <div className="flex justify-between py-3 px-20 bg-yellow-500">
           <div className="flex items-center">
             <img src={logo} alt="" />
             <h1>ProShop</h1>
@@ -20,11 +22,22 @@ const Header = () => {
               </button>
             </div>
 
-            <div className="flex gap-2 items-center hidden sm:flex">
-              <span className="material-icons">shopping_cart</span>
-              <span>Cart</span>
-              <span className="material-icons">person</span>
-              <span>Sign In</span>
+            <div className="flex gap-3">
+              <Link
+                to="/cart"
+                className="flex gap-1 items-center hidden sm:flex"
+              >
+                <span className="material-icons">shopping_cart</span>
+                <span>Cart</span>
+              </Link>
+
+              <Link
+                to="/signin"
+                className="flex gap-1 items-center hidden sm:flex"
+              >
+                <span className="material-icons">person</span>
+                <span>Sign In</span>
+              </Link>
             </div>
           </div>
         </div>
