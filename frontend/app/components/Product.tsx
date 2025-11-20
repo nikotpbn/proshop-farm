@@ -1,5 +1,7 @@
 import { Link } from "react-router";
 
+import Rating from "./Rating";
+
 interface ProductType {
   _id: string;
   name: string;
@@ -24,7 +26,9 @@ const Product = ({ product }: { product: ProductType }) => {
         <strong>{product.name}</strong>
       </Link>
 
-      <div className="flex-1 flex-col content-end  text-xl mt-2 mb-2">
+      <Rating value={product.rating} text={`${product.numReviews} Reviews`} />
+
+      <div className="flex flex-col text-xl mt-2 mb-2">
         <span className="">${product.price}</span>
       </div>
     </div>
