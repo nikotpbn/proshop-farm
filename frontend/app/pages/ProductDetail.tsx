@@ -30,18 +30,23 @@ const ProductDetail = ({ params }: Route.ComponentProps) => {
 
           <div className="flex justify-center w-full sm:w-[30%]">
             <div className="flex flex-col">
-              <h3>{product.name}</h3>
+              <span>
+                <strong>{product.name}</strong>
+              </span>
+              <hr className="mt-2 mb-2" />
               <Rating
                 value={product.rating}
                 text={`${product.numReviews} reviews`}
               />
+              <hr className="mt-2 mb-2" />
               <div>Price: ${product.price}</div>
+              <hr className="mt-2 mb-2" />
               <div>{product.description}</div>
             </div>
           </div>
 
           <div className="flex justify-center w-full sm:w-[30%]">
-            <div className="border rounded-md w-full">
+            <div className="border rounded-md w-full max-h-max">
               <div className="flex justify-between py-3 px-2">
                 <span>Price:</span>
                 <span>{`$${product.price}`}</span>
@@ -53,7 +58,8 @@ const ProductDetail = ({ params }: Route.ComponentProps) => {
                   {product.countInStock > 0 ? "In Stock" : "Out of Stock"}
                 </span>
               </div>
-              <span className="flex justify-center">
+              <hr />
+              <span className="flex justify-center my-3">
                 <button
                   disabled={product.countInStock === 0}
                   className="w-[90%] p-2 rounded-md hover:text-black hover:bg-white border border-white-500"
