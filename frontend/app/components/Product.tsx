@@ -1,19 +1,8 @@
 import { Link } from "react-router";
 
-import Rating from "./Rating";
+import type { ProductType } from "~/models/ProductType";
 
-interface ProductType {
-  _id: string;
-  name: string;
-  image: string;
-  description: string;
-  brand: string;
-  category: string;
-  price: number;
-  countInStock: number;
-  rating: number;
-  numReviews: number;
-}
+import Rating from "./Rating";
 
 const Product = ({ product }: { product: ProductType }) => {
   return (
