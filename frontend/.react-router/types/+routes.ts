@@ -26,8 +26,8 @@ type RouteFiles = {
     id: "root";
     page: "/" | "/product/:productId";
   };
-  "routes/home.tsx": {
-    id: "routes/home";
+  "pages/Landing.tsx": {
+    id: "pages/Landing";
     page: "/";
   };
   "./pages/ProductDetail.tsx": {
@@ -38,6 +38,6 @@ type RouteFiles = {
 
 type RouteModules = {
   "root": typeof import("./app/root.tsx");
-  "routes/home": typeof import("./app/routes/home.tsx");
+  "pages/Landing": typeof import("./app/pages/Landing.tsx");
   "pages/ProductDetail": typeof import("./app/./pages/ProductDetail.tsx");
 };

@@ -1,8 +1,21 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from products import products
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -12,7 +25,7 @@ def read_root():
 
 @app.get("/api/products")
 def product_list():
-    return {"products": products}
+    return products
 
 
 @app.get("/api/products/{product_id}")

@@ -1,14 +1,19 @@
 import type { Route } from "./+types/ProductDetail";
+import type { ProductType } from "~/models/ProductType";
+
 import { Link } from "react-router";
 
 import Rating from "~/components/Rating";
 
-import type { ProductType } from "~/models/ProductType";
 
-import products from "../src/products";
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+  const res = await fetch(`http://localhost:8000/api/products/${params.productId}`);
+  const product = await res.json();
+  return product;
+}
 
-const ProductDetail = ({ params }: Route.ComponentProps) => {
-  const product = products.find((p: ProductType) => p._id === params.productId);
+const ProductDetail = ({ loaderData }: Route.ComponentProps) => {
+  const product = loaderData;
 
   if (product) {
     return (
