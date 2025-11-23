@@ -1,9 +1,14 @@
+from dotenv import load_dotenv
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from products import products
 
+from database import connect_to_mongo
+
 app = FastAPI()
+load_dotenv()
 
 origins = [
     "http://localhost:5173",
@@ -17,6 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+connect_to_mongo()
 
 @app.get("/")
 def read_root():
