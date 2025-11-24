@@ -1,6 +1,6 @@
 from beanie import Document, Indexed
 
-from shared import Timestamp
+from models.shared import Timestamp
 
 
 class User(Document):

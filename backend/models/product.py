@@ -1,11 +1,7 @@
-from typing import Optional
-from beanie import Document, Indexed
-from bson.decimal128 import Decimal128
-from bson.objectid import ObjectId
+from beanie import Document, Indexed, DecimalAnnotation
 
-from shared import Timestamp
-
-from backend.models.user import User
+from models.user import User
+from models.shared import Timestamp
 
 
 class Review(Document):
@@ -26,6 +22,6 @@ class Product(Document):
     reviews: list[Review] = []
     rating: float
     numReviews: int = 0
-    price: Indexed(Decimal128) = 0
+    price: DecimalAnnotation = 0
     count_in_stock: int = 0
     timestamp: Timestamp = Timestamp()

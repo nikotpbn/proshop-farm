@@ -1,12 +1,10 @@
 from datetime import date
 from typing import Optional
-from beanie import Document
-from bson.decimal128 import Decimal128
-from bson.objectid import ObjectId
+from beanie import Document, DecimalAnnotation
 
-from shared import Timestamp
-from backend.models.user import User
-from backend.models.product import Product
+from models.user import User
+from models.product import Product
+from models.shared import Timestamp
 
 
 class OrderItem(Document):
@@ -37,10 +35,10 @@ class Order(Document):
     shipping_address: ShippingAddress
     payment_method: str
     payment_result: Optional[PaymentResult] = None
-    items_price: Decimal128 = 0
-    tax_price: Decimal128 = 0
-    shipping_price: Decimal128 = 0
-    total_price: Decimal128 = 0
+    items_price: DecimalAnnotation = 0
+    tax_price: DecimalAnnotation = 0
+    shipping_price: DecimalAnnotation = 0
+    total_price: DecimalAnnotation = 0
     is_paid: bool = False
     paid_at: Optional[str] = None
     is_delivered: bool = False

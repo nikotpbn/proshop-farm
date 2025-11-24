@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from products import products
+from data.products import products
 
 from database import connect_to_mongo
 
@@ -29,12 +29,12 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/api/products")
+@app.get("/api/v1/products")
 def product_list():
     return products
 
 
-@app.get("/api/products/{product_id}")
+@app.get("/api/v1/products/{product_id}")
 async def product_detail(product_id: str):
     product = next((item for item in products if item["_id"] == product_id), None)
     if product:
