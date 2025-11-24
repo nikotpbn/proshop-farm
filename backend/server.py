@@ -1,13 +1,20 @@
 from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from data.products import products
+from models.product import Product
 
-from database import connect_to_mongo
+from database import init_db
 
-app = FastAPI()
+
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 load_dotenv()
 
 origins = [
@@ -22,7 +29,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-connect_to_mongo()
 
 @app.get("/")
 def read_root():
@@ -30,13 +36,13 @@ def read_root():
 
 
 @app.get("/api/v1/products")
-def product_list():
-    return products
+async def product_list():
+    return await Product.find().to_list()
 
 
 @app.get("/api/v1/products/{product_id}")
 async def product_detail(product_id: str):
-    product = next((item for item in products if item["_id"] == product_id), None)
+    product = await Product.get(product_id)
     if product:
         return product
 
