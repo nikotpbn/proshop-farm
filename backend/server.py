@@ -1,10 +1,15 @@
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
 
-from models.product import Product
+from pydantic import ValidationError
+
+from routers import products
 
 from database import init_db
 
@@ -30,20 +35,17 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request: Request, exc: ValidationError):
+    return JSONResponse(
+        status_code=422,
+        content=jsonable_encoder({"message": str(exc)}),
+    )
+
+
+app.include_router(products.router)
+
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
-
-@app.get("/api/v1/products")
-async def product_list():
-    return await Product.find().to_list()
-
-
-@app.get("/api/v1/products/{product_id}")
-async def product_detail(product_id: str):
-    product = await Product.get(product_id)
-    if product:
-        return product
-
-    return {"error": "Product not found"}, 404
