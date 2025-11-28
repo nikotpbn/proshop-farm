@@ -11,7 +11,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  const res = await fetch(`http://localhost:8000/api/products/`);
+  const res = await fetch(`http://localhost:8000/api/v1/products/`);
   const products = await res.json();
   return products;
 }

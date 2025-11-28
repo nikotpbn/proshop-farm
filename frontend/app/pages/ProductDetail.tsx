@@ -7,7 +7,7 @@ import Rating from "~/components/Rating";
 
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  const res = await fetch(`http://localhost:8000/api/products/${params.productId}`);
+  const res = await fetch(`http://localhost:8000/api/v1/products/${params.productId}`);
   const product = await res.json();
   return product;
 }
