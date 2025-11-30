@@ -1,6 +1,8 @@
 import type { Route } from "./+types/Landing";
 import type { ProductType } from "~/models/ProductType";
 
+import { useGetProductsQuery } from "~/slices/productsApiSlice";
+
 import Product from "~/components/Product";
 
 export function meta({}: Route.MetaArgs) {
@@ -10,19 +12,16 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  const res = await fetch(`http://localhost:8000/api/v1/products/`);
-  const products = await res.json();
-  return products;
-}
-
-// HydrateFallback is rendered while the client loader is running
-export function HydrateFallback() {
-  return <div>Loading...</div>;
-}
-
 const Landing = ({ loaderData }: Route.ComponentProps) => {
-  const products = loaderData;
+  const { data: products, isLoading, isError } = useGetProductsQuery();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading products.</div>;
+  }
 
   return (
     <>

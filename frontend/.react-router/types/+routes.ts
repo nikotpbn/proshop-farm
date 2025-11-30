@@ -38,6 +38,6 @@ type RouteFiles = {
 
 type RouteModules = {
   "root": typeof import("./app/root.tsx");
-  "pages/Landing": typeof import("./app/pages/Landing.tsx");
+  "pages/Landing": typeof import("./app/pages/Landing.js");
   "pages/ProductDetail": typeof import("./app/./pages/ProductDetail.tsx");
 };

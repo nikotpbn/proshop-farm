@@ -5,15 +5,27 @@ import { Link } from "react-router";
 
 import Rating from "~/components/Rating";
 
+import { useGetProductDetailsQuery } from "~/slices/productsApiSlice";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  const res = await fetch(`http://localhost:8000/api/v1/products/${params.productId}`);
-  const product = await res.json();
-  return product;
+  return params.productId;
 }
 
 const ProductDetail = ({ loaderData }: Route.ComponentProps) => {
-  const product = loaderData;
+  const productId = loaderData;
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useGetProductDetailsQuery(productId);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading products.</div>;
+  }
 
   if (product) {
     return (
