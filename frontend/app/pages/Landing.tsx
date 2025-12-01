@@ -4,6 +4,8 @@ import type { ProductType } from "~/models/ProductType";
 import { useGetProductsQuery } from "~/slices/productsApiSlice";
 
 import Product from "~/components/Product";
+import Loader from "~/components/Loader";
+import Message from "~/components/Message";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -16,11 +18,11 @@ const Landing = ({ loaderData }: Route.ComponentProps) => {
   const { data: products, isLoading, isError } = useGetProductsQuery();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (isError) {
-    return <div>Error loading products.</div>;
+    return <Message variant="danger">Could not fetch products</Message>;
   }
 
   return (

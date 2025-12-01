@@ -55,9 +55,9 @@ export default function App() {
   return (
     <Provider store={store}>
       <Header />
-      <div className="h-full px-20">
+      <main className="h-auto sm:h-full px-20">
         <Outlet />
-      </div>
+      </main>
       <Footer />
     </Provider>
   );

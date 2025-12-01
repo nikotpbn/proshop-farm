@@ -4,6 +4,8 @@ import type { ProductType } from "~/models/ProductType";
 import { Link } from "react-router";
 
 import Rating from "~/components/Rating";
+import Loader from "~/components/Loader";
+import Message from "~/components/Message";
 
 import { useGetProductDetailsQuery } from "~/slices/productsApiSlice";
 
@@ -20,11 +22,11 @@ const ProductDetail = ({ loaderData }: Route.ComponentProps) => {
   } = useGetProductDetailsQuery(productId);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (isError) {
-    return <div>Error loading products.</div>;
+    return <Message variant="danger">Could not find product</Message>;
   }
 
   if (product) {
