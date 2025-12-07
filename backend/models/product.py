@@ -23,5 +23,5 @@ class Product(Document):
     rating: float
     numReviews: int = 0
     price: DecimalAnnotation = 0
-    count_in_stock: int = 0
+    countInStock: int = 0
     timestamp: Timestamp = Timestamp()
