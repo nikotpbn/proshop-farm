@@ -10,12 +10,14 @@ from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 
 from routers import products
+from routers import cart
 
-from database import init_db
+from database import init_db, init_cache
 
 
 async def lifespan(app: FastAPI):
     await init_db()
+    await init_cache()
     yield
 
 
@@ -44,6 +46,7 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
 
 
 app.include_router(products.router)
+app.include_router(cart.router)
 
 
 @app.get("/")

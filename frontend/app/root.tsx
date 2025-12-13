@@ -13,8 +13,7 @@ import "./app.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-import { store } from './store'
-import { Provider } from 'react-redux'
+import { Provider } from "react-redux";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -53,13 +52,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <Provider store={store}>
+    <>
       <Header />
       <main className="h-auto sm:h-full px-20">
         <Outlet />
       </main>
       <Footer />
-    </Provider>
+    </>
   );
 }
 

@@ -10,9 +10,6 @@ import Loader from "~/components/Loader";
 import Message from "~/components/Message";
 
 import { PRODUCTS_URL } from "~/constants";
-import { addToCart } from "~/slices/cartSlice.client";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const res = await fetch(`${PRODUCTS_URL}${params.productId}`);
@@ -20,34 +17,21 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   return product;
 }
 
-// export async function clientAction({ request }: Route.ClientActionArgs) {
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
+export async function clientAction({ request }: Route.ClientActionArgs) {
+  let formData = await request.formData();
+  let pid = formData.get("pid");
+  let price = formData.get("price");
+  let qty = formData.get("qty");
 
-//   let formData = await request.formData();
-//   let pid = formData.get("pid");
-//   let price = formData.get("price");
-//   let qty = formData.get("qty");
-
-//   dispatch(addToCart({ pid, price, qty }));
-//   // navigate("/cart");
-// }
+}
 
 export function HydrateFallback() {
   return <Loader />;
 }
 
 const ProductDetail = ({ loaderData }: Route.ComponentProps) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const [qty, setQty] = useState(1);
   const product = loaderData;
-
-  const addToCartHandler = () => {
-    dispatch(addToCart({ ...product, qty }));
-    // navigate("/cart");
-  };
 
   if (!product) {
     return <Message variant="danger">Could not find product</Message>;
@@ -101,20 +85,13 @@ const ProductDetail = ({ loaderData }: Route.ComponentProps) => {
               </div>
               <hr />
 
-              <div className="flex flex-col items-center py-2">
+              <Form method="post" className="flex flex-col items-center py-2">
                 <div className="flex justify-between w-full py-3 px-2">
                   <span>Qty:</span>
                   <span className="w-[40%]">
-                    <select
-                      onChange={(e) => setQty(Number(e.currentTarget.value))}
-                      name="qty"
-                      id=""
-                      className="border w-full border-white-500"
-                    >
+                    <select name="qty" id="" className="border w-full border-white-500">
                       {Array.from({ length: product.countInStock }, (v, i) => (
-                        <option key={i} value={i + 1}>
-                          {i + 1}
-                        </option>
+                        <option key={i} value={i + 1}>{i + 1}</option>
                       ))}
                     </select>
                   </span>
@@ -123,13 +100,12 @@ const ProductDetail = ({ loaderData }: Route.ComponentProps) => {
                 <input type="hidden" name="pid" value={product._id} />
                 <input type="hidden" name="price" value={product.price} />
                 <button
-                  onClick={addToCartHandler}
                   disabled={product.countInStock === 0}
                   className="flex w-[90%] justify-center p-2 rounded-md hover:text-black hover:bg-white border border-white-500"
                 >
                   Add to Cart
                 </button>
-              </div>
+              </Form>
             </div>
           </div>
         </div>
