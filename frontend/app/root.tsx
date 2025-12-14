@@ -13,7 +13,7 @@ import "./app.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-import { Provider } from "react-redux";
+import { CART_URL } from "./constants";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,10 +50,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+export async function clientLoader() {
+  const res = await fetch(`${CART_URL}`, { credentials: "include" });
+  const cart = await res.json();
+  return cart;
+}
+
+export default function App({ loaderData }: Route.ComponentProps) {
+  const cart = loaderData;
+
   return (
     <>
-      <Header />
+      <Header cart={cart} />
       <main className="h-auto sm:h-full px-20">
         <Outlet />
       </main>

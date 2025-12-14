@@ -27,7 +27,7 @@ async def get_cart(
         r = get_redis_conn()
 
         data = r.json().get(f"cart:{cart_session}", "$")[0]
-        return JSONResponse(content={"cart": data})
+        return JSONResponse(content=data)
     except Exception as e:
         content = {"msg": "Something went wrong"}
         return JSONResponse(content=content)
@@ -76,7 +76,9 @@ async def add_item(
 
             content = {"msg": "Cart session created, item was added", "cart": data}
             response = JSONResponse(content=content)
-            response.set_cookie("cart_session", cart_session, expires=21600)
+            response.set_cookie(
+                "cart_session", cart_session, expires=21600, samesite=None, secure=True, httponly=True
+            )
 
             return response
 
@@ -146,9 +148,7 @@ async def add_item(
 
         cart = data["cartItems"]
         index, item = [
-            (i, cart[i])
-            for i in range(len(cart))
-            if cart[i]["id"] == cart_item.id
+            (i, cart[i]) for i in range(len(cart)) if cart[i]["id"] == cart_item.id
         ][0]
 
         if item:

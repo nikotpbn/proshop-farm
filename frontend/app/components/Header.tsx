@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 
 import logo from "../src/assets/logo.png";
 
-const Header = () => {
+const Header = ({ cart }: any) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -28,7 +28,12 @@ const Header = () => {
                 className="flex gap-1 items-center hidden sm:flex"
               >
                 <span className="material-icons">shopping_cart</span>
-                <span>Cart</span>
+                <span>
+                  Cart{" "}
+                  <span className="bg-white text-yellow-500 px-3 py-1 border rounded-[50%]">
+                    {cart && cart.cartItems.length}
+                  </span>
+                </span>
               </Link>
 
               <Link

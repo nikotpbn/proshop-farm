@@ -1,7 +1,6 @@
 import type { Route } from "./+types/ProductDetail";
 import type { ProductType } from "~/models/ProductType";
 import { Form } from "react-router";
-import { useState } from "react";
 
 import { Link } from "react-router";
 
@@ -9,7 +8,7 @@ import Rating from "~/components/Rating";
 import Loader from "~/components/Loader";
 import Message from "~/components/Message";
 
-import { PRODUCTS_URL } from "~/constants";
+import { PRODUCTS_URL, CART_URL } from "~/constants";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const res = await fetch(`${PRODUCTS_URL}${params.productId}`);
@@ -18,11 +17,19 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 }
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
-  let formData = await request.formData();
-  let pid = formData.get("pid");
-  let price = formData.get("price");
-  let qty = formData.get("qty");
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
 
+  const res = await fetch(`${CART_URL}/add/`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const cart = await res.json();
 }
 
 export function HydrateFallback() {
@@ -30,7 +37,6 @@ export function HydrateFallback() {
 }
 
 const ProductDetail = ({ loaderData }: Route.ComponentProps) => {
-  const [qty, setQty] = useState(1);
   const product = loaderData;
 
   if (!product) {
@@ -89,15 +95,23 @@ const ProductDetail = ({ loaderData }: Route.ComponentProps) => {
                 <div className="flex justify-between w-full py-3 px-2">
                   <span>Qty:</span>
                   <span className="w-[40%]">
-                    <select name="qty" id="" className="border w-full border-white-500">
+                    <select
+                      name="qty"
+                      id=""
+                      className="border w-full border-white-500"
+                    >
                       {Array.from({ length: product.countInStock }, (v, i) => (
-                        <option key={i} value={i + 1}>{i + 1}</option>
+                        <option key={i} value={i + 1}>
+                          {i + 1}
+                        </option>
                       ))}
                     </select>
                   </span>
                 </div>
 
-                <input type="hidden" name="pid" value={product._id} />
+                <input type="hidden" name="id" value={product._id} />
+                <input type="hidden" name="name" value={product.name} />
+                <input type="hidden" name="image" value={product.image} />
                 <input type="hidden" name="price" value={product.price} />
                 <button
                   disabled={product.countInStock === 0}
