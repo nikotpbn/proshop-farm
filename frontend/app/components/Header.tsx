@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import type { CartItem } from "~/models/CartItem";
+
+import { useState } from "react";
 import { Link } from "react-router";
 
 import logo from "../src/assets/logo.png";
@@ -10,10 +12,12 @@ const Header = ({ cart }: any) => {
     <header>
       <nav className="mb-5">
         <div className="flex justify-between py-3 px-20 bg-yellow-500">
-          <div className="flex items-center">
-            <img src={logo} alt="" />
-            <h1>ProShop</h1>
-          </div>
+          <Link to="/">
+            <div className="flex items-center">
+              <img src={logo} alt="" />
+              <h1>ProShop</h1>
+            </div>
+          </Link>
 
           <div className="flex items-center">
             <div className="sm:hidden cursor-pointer">
@@ -29,10 +33,16 @@ const Header = ({ cart }: any) => {
               >
                 <span className="material-icons">shopping_cart</span>
                 <span>
-                  Cart{" "}
-                  <span className="bg-white text-yellow-500 px-3 py-1 border rounded-[50%]">
-                    {cart && cart.cartItems.length}
-                  </span>
+                  Cart
+                  {cart.cartItems.length > 0 && (
+                    <span className="bg-white text-yellow-500 px-3 py-1 border rounded-[50%]">
+                      {cart.cartItems
+                        .map((item: CartItem) => item.qty)
+                        .reduce((sum: number, qty: number) => {
+                          return sum + qty;
+                        })}
+                    </span>
+                  )}
                 </span>
               </Link>
 

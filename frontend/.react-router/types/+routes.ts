@@ -19,12 +19,15 @@ type Pages = {
       "productId": string;
     };
   };
+  "/cart": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/product/:productId";
+    page: "/" | "/product/:productId" | "/cart";
   };
   "pages/Landing.tsx": {
     id: "pages/Landing";
@@ -34,10 +37,15 @@ type RouteFiles = {
     id: "pages/ProductDetail";
     page: "/product/:productId";
   };
+  "./pages/Cart.tsx": {
+    id: "pages/Cart";
+    page: "/cart";
+  };
 };
 
 type RouteModules = {
   "root": typeof import("./app/root.tsx");
   "pages/Landing": typeof import("./app/pages/Landing.tsx");
   "pages/ProductDetail": typeof import("./app/./pages/ProductDetail.tsx");
+  "pages/Cart": typeof import("./app/./pages/Cart.tsx");
 };

@@ -113,6 +113,11 @@ const ProductDetail = ({ loaderData }: Route.ComponentProps) => {
                 <input type="hidden" name="name" value={product.name} />
                 <input type="hidden" name="image" value={product.image} />
                 <input type="hidden" name="price" value={product.price} />
+                <input
+                  type="hidden"
+                  name="count_in_stock"
+                  value={product.countInStock}
+                />
                 <button
                   disabled={product.countInStock === 0}
                   className="flex w-[90%] justify-center p-2 rounded-md hover:text-black hover:bg-white border border-white-500"

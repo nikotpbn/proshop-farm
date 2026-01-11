@@ -51,9 +51,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export async function clientLoader() {
-  const res = await fetch(`${CART_URL}`, { credentials: "include" });
-  const cart = await res.json();
-  return cart;
+  try {
+    const res = await fetch(`${CART_URL}`, { credentials: "include" });
+
+    if (res.status === 200) {
+      const cart = await res.json();
+      return cart;
+    }
+    return null;
+  } catch (error) {}
 }
 
 export default function App({ loaderData }: Route.ComponentProps) {

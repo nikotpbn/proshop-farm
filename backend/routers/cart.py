@@ -161,7 +161,8 @@ async def update_remove_item(
             # Remove entire product
             if cart_item.qty <= 0:
                 data["cartItems"].pop(index)
-                content = {"msg": "Item successfully removed"}
+                r.json().set(f"cart:{cart_session}", "$", data)
+                content = {"msg": "Item successfully removed", "cart": data}
                 return JSONResponse(content=content)
 
             # Replace quantity

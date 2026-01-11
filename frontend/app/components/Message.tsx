@@ -3,7 +3,7 @@ const Message = ({
   children,
 }: {
   variant: string;
-  children: string;
+  children: any;
 }) => {
   const variants = [
     {
