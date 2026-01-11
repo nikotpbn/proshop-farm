@@ -1,11 +1,9 @@
 from dotenv import load_dotenv
-from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.exceptions import RequestValidationError
 
 from pydantic import ValidationError
 
@@ -47,8 +45,3 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
 
 app.include_router(products.router)
 app.include_router(cart.router)
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}

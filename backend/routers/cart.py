@@ -2,13 +2,13 @@ import uuid
 import json
 from typing import Annotated
 
-from fastapi import APIRouter, Request, Cookie
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Request, Cookie, status
+from fastapi.responses import JSONResponse, Response
+
 
 from database import get_redis_conn
-from redis.commands.search.query import Query
 
-from models.cart_item import CartItem
+from models.cart_item import CartItem, UpdateSerializer
 
 router = APIRouter(
     prefix="/api/v1/cart",
@@ -22,15 +22,14 @@ async def get_cart(
 ):
     if not cart_session:
         content = {"msg": "Cart not found"}
-        return JSONResponse(content=content, status_code=404)
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
     try:
         r = get_redis_conn()
-
         data = r.json().get(f"cart:{cart_session}", "$")[0]
-        return JSONResponse(content=data)
+        return data
+
     except Exception as e:
-        content = {"msg": "Something went wrong"}
-        return JSONResponse(content=content)
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.post("/add")
@@ -59,6 +58,7 @@ async def add_item(
                         "price": cart_item.price,
                         "image": cart_item.image,
                         "qty": cart_item.qty,
+                        "countInStock": cart_item.count_in_stock,
                     }
                 ],
                 "itemsPrice": items_price,
@@ -77,12 +77,18 @@ async def add_item(
             content = {"msg": "Cart session created, item was added", "cart": data}
             response = JSONResponse(content=content)
             response.set_cookie(
-                "cart_session", cart_session, expires=21600, samesite=None, secure=True, httponly=True
+                "cart_session",
+                cart_session,
+                expires=21600,
+                samesite=None,
+                secure=True,
+                httponly=True,
             )
 
             return response
 
         except Exception as e:
+            print(e)
             content = {"msg": "Something went wrong"}
             return JSONResponse(content=content)
     else:
@@ -91,7 +97,6 @@ async def add_item(
         try:
             data = r.json().get(f"cart:{cart_session}", "$")[0]
 
-            # TODO: Use filter function instead (to not return a list)
             item = [item for item in data["cartItems"] if item["id"] == cart_item.id]
 
             if item:
@@ -106,6 +111,7 @@ async def add_item(
                         "image": cart_item.image,
                         "price": cart_item.price,
                         "qty": cart_item.qty,
+                        "countInStock": cart_item.count_in_stock,
                     }
                 )
 
@@ -132,10 +138,10 @@ async def add_item(
             return JSONResponse(content=content)
 
 
-@router.post("/remove")
-async def add_item(
+@router.patch("/update")
+async def update_remove_item(
     request: Request,
-    cart_item: CartItem,
+    cart_item: UpdateSerializer,
     cart_session: Annotated[uuid.UUID | None, Cookie()] = None,
 ):
     if not cart_session:
@@ -153,12 +159,14 @@ async def add_item(
 
         if item:
             # Remove entire product
-            if item["qty"] - cart_item.qty <= 0:
+            if cart_item.qty <= 0:
                 data["cartItems"].pop(index)
+                content = {"msg": "Item successfully removed"}
+                return JSONResponse(content=content)
 
-            # Subtract quantity to be removed
+            # Replace quantity
             else:
-                item["qty"] -= cart_item.qty
+                item["qty"] = cart_item.qty
 
             # Recalculate totals
             data["itemsPrice"] = sum(
@@ -171,7 +179,7 @@ async def add_item(
             )
 
             r.json().set(f"cart:{cart_session}", "$", data)
-            content = {"msg": "Item removed successfully", "cart": data}
+            content = {"msg": "Item updated", "qty": item["qty"]}
             return JSONResponse(content=content)
 
         else:

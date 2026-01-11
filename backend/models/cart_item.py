@@ -1,7 +1,12 @@
-from typing import Optional
-from beanie import Document, Indexed, DecimalAnnotation
+from beanie import Document
+from pydantic import BaseModel
 
 from models.user import User
+
+
+class UpdateSerializer(BaseModel):
+    id: str
+    qty: int
 
 
 class CartItem(Document):
@@ -11,3 +16,4 @@ class CartItem(Document):
     image: str
     price: float
     qty: int
+    count_in_stock: int | None = None
