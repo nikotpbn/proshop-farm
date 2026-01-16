@@ -1,3 +1,5 @@
 fastapi[standard]==0.121.3
 python-dotenv==1.2.1
 beanie==2.0.1
+PyJWT==2.10.1
+pwdlib==0.3.0

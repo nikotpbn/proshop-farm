@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 
 from fastapi import FastAPI, Request
@@ -9,6 +10,7 @@ from pydantic import ValidationError
 
 from routers import products
 from routers import cart
+from routers import users
 
 from database import init_db, init_cache
 
@@ -21,6 +23,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 load_dotenv()
+
+SECRET_KEY = os.environ["SECRET_KEY"]
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 origins = [
     "http://localhost:5173",
@@ -45,3 +51,4 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
 
 app.include_router(products.router)
 app.include_router(cart.router)
+app.include_router(users.router)
