@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Cookie
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -76,7 +76,10 @@ async def update_user_profile():
 
 @router.get("/logout")
 async def user_logout():
-    return "User Logout"
+    response = JSONResponse({"message": "User logged out"}, status_code=200)
+    response.delete_cookie("access")
+
+    return response
 
 
 """
