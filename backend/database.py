@@ -1,10 +1,8 @@
 import os
-import certifi
-from rich import print
-
 import redis
-from redis.commands.search.field import TextField, NumericField, TagField
-from redis.commands.search.index_definition import IndexDefinition, IndexType
+import certifi
+
+from rich import print
 
 from pymongo import AsyncMongoClient
 from beanie import init_beanie

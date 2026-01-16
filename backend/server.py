@@ -1,5 +1,6 @@
-import os
 from dotenv import load_dotenv
+
+load_dotenv()
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -22,11 +23,6 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-load_dotenv()
-
-SECRET_KEY = os.environ["SECRET_KEY"]
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 origins = [
     "http://localhost:5173",
