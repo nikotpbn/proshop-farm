@@ -2,13 +2,14 @@ from typing import Union
 
 import os
 import jwt
+from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
 
 from fastapi.security import OAuth2PasswordBearer
 
 from datetime import timedelta, timezone, datetime
 
-from models.user import User
+from models.user import User, UserProfile
 
 SECRET_KEY = os.environ.get("SECRET_KEY", None)
 ALGORITHM = "HS256"
@@ -44,3 +45,20 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+
+async def get_current_user(token):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        if username is None:
+            return None
+
+    except InvalidTokenError:
+        return None
+
+    user = await User.find_one(User.username == username).project(UserProfile)
+    if user is None:
+        return None
+
+    return user

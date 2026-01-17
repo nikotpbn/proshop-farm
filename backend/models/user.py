@@ -21,3 +21,10 @@ class User(Document):
     password: str
     is_admin: bool = False
     timestamp: Timestamp = Timestamp()
+
+
+class UserProfile(BaseModel):
+    username: str
+    first_name: str
+    last_name: str | None = None
+    email: str

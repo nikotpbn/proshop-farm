@@ -7,7 +7,12 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
 from models.product import User
-from utils.auth import get_password_hash, authenticate_user, create_access_token
+from utils.auth import (
+    get_password_hash,
+    authenticate_user,
+    create_access_token,
+    get_current_user,
+)
 
 router = APIRouter(
     prefix="/api/v1/users",
@@ -65,13 +70,20 @@ Private Acess
 
 
 @router.get("/profile")
-async def get_user_profile():
-    return "User Profile"
+async def get_user_profile(access: Annotated[str | None, Cookie()] = None):
+    if not access:
+        return JSONResponse({"message": "Unauthenticated User"}, status_code=401)
+
+    user = await get_current_user(access)
+    if user:
+        return user
+    else:
+        return JSONResponse({"message": "User not found"}, status_code=404)
 
 
 @router.patch("/profile")
-async def update_user_profile():
-    return "Update User Profile"
+async def update_user_profile(access: Annotated[str | None, Cookie()] = None):
+    return "User Profile"
 
 
 @router.get("/logout")
