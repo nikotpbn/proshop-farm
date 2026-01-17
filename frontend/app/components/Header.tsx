@@ -34,7 +34,7 @@ const Header = ({ cart }: any) => {
                 <span className="material-icons">shopping_cart</span>
                 <span>
                   Cart
-                  {cart.cartItems.length > 0 && (
+                  {cart && cart.cartItems.length > 0 && (
                     <span className="bg-white text-yellow-500 px-3 py-1 border rounded-[50%]">
                       {cart.cartItems
                         .map((item: CartItem) => item.qty)
