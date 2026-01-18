@@ -1,11 +1,11 @@
-import bcrypt
+from utils.auth import get_password_hash
 
 users = [
     {
         "username": "admin",
         "first_name": "admin",
         "email": "admin@example.com",
-        "password": bcrypt.hashpw(b"admin123", bcrypt.gensalt()),
+        "password": get_password_hash("admin123"),
         "isAdmin": True,
     },
     {
@@ -13,7 +13,7 @@ users = [
         "first_name": "Jonh",
         "last_name": "Doe",
         "email": "jdoe@example.com",
-        "password": bcrypt.hashpw(b"pass123", bcrypt.gensalt()),
+        "password": get_password_hash("pass123"),
         "isAdmin": False,
     },
     {
@@ -21,7 +21,7 @@ users = [
         "first_name": "Mary",
         "last_name": "Jane",
         "email": "mjane@example.com",
-        "password": bcrypt.hashpw(b"pass123", bcrypt.gensalt()),
+        "password": get_password_hash("pass123"),
         "isAdmin": False,
     },
 ]
