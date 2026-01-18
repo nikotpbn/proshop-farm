@@ -1,4 +1,4 @@
-[
+products = [
     {
         "brand": "Apple",
         "category": "Electronics",

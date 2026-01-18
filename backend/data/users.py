@@ -2,21 +2,26 @@ import bcrypt
 
 users = [
     {
-        "name": "admin",
+        "username": "admin",
+        "first_name": "admin",
         "email": "admin@example.com",
-        "password": bcrypt.hashpw(b"adminpass", bcrypt.gensalt()),
+        "password": bcrypt.hashpw(b"admin123", bcrypt.gensalt()),
         "isAdmin": True,
     },
     {
-        "name": "John Doe",
+        "username": "jdoe",
+        "first_name": "Jonh",
+        "last_name": "Doe",
         "email": "jdoe@example.com",
-        "password": bcrypt.hashpw(b"adminpass", bcrypt.gensalt()),
+        "password": bcrypt.hashpw(b"pass123", bcrypt.gensalt()),
         "isAdmin": False,
     },
     {
-        "name": "Mary Jane",
+        "username": "mjane",
+        "first_name": "Mary",
+        "last_name": "Jane",
         "email": "mjane@example.com",
-        "password": bcrypt.hashpw(b"adminpass", bcrypt.gensalt()),
+        "password": bcrypt.hashpw(b"pass123", bcrypt.gensalt()),
         "isAdmin": False,
     },
 ]

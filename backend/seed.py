@@ -39,7 +39,7 @@ async def create():
         user_docs = [User(**user) for user in users_seed]
         await User.insert_many(user_docs)
 
-        admin_user = await User.find_one(User.name == "admin")
+        admin_user = await User.find_one(User.username == "admin")
 
         product_docs = []
 
