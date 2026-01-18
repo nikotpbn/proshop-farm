@@ -58,7 +58,9 @@ async def user_login(
     )
 
     response = JSONResponse("User logged in", status_code=200)
-    response.set_cookie(key="access", value=access_token, httponly=True)
+    response.set_cookie(
+        key="access", value=access_token, httponly=True, expires=timedelta(minutes=30)
+    )
 
     return response
 
@@ -72,7 +74,7 @@ Private Acess
 @router.get("/profile")
 async def get_user_profile(access: Annotated[str | None, Cookie()] = None):
     if not access:
-        return JSONResponse({"message": "Unauthenticated User"}, status_code=401)
+        return JSONResponse({"message": "Missing credentials"}, status_code=204)
 
     user = await get_current_user(access)
     if user:

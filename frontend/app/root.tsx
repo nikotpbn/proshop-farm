@@ -13,7 +13,9 @@ import "./app.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-import { CART_URL } from "./constants";
+import { CART_URL, USERS_URL } from "./constants";
+
+import { userContext } from "./context";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,13 +52,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export async function clientLoader() {
-  try {
-    const res = await fetch(`${CART_URL}`, { credentials: "include" });
+async function authMiddleware({ context }: any) {
+  let user = null;
+  const userRes = await fetch(`${USERS_URL}/profile/`, {
+    credentials: "include",
+  });
 
-    if (res.status === 200) {
-      const cart = await res.json();
-      return cart;
+  if (userRes.status === 200) {
+    user = await userRes.json();
+    context.set(userContext, user);
+  }
+}
+
+export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
+  authMiddleware,
+];
+
+export async function clientLoader({ context }: Route.LoaderArgs) {
+  let cart = null;
+  try {
+    const cartRes = await fetch(`${CART_URL}`, { credentials: "include" });
+
+    if (cartRes.status === 200) {
+      cart = await cartRes.json();
     }
     return null;
   } catch (error) {}
