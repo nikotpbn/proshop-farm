@@ -5,7 +5,7 @@ import { Link } from "react-router";
 
 import logo from "../src/assets/logo.png";
 
-const Header = ({ cart }: any) => {
+const Header = ({ cart, user }: any) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -51,7 +51,7 @@ const Header = ({ cart }: any) => {
                 className="flex gap-1 items-center hidden sm:flex"
               >
                 <span className="material-icons">person</span>
-                <span>Sign In</span>
+                {user ? <span>{user.username}</span> : <span>Sign In</span>}
               </Link>
             </div>
           </div>

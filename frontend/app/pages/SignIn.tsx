@@ -22,9 +22,19 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
       body: formData,
     });
 
+    // User is authenticated
     if (res.status === 200) {
-      const data = await res.json();
-      console.log(data.message);
+      const res = await fetch(`${USERS_URL}/profile/`, {
+        credentials: "include",
+      });
+
+      // Set user profile in local storage
+      if (res.status === 200) {
+        const user = await res.json();
+        user.accessExpires = Date.now() + 30 * 60 * 1000; // 30 minutes
+        localStorage.setItem("user", JSON.stringify(user));
+        return redirect("/");
+      }
     }
   } catch (error) {
     console.log("something went wrong");

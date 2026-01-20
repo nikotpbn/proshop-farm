@@ -53,13 +53,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 async function authMiddleware({ context }: any) {
-  let user = null;
-  const userRes = await fetch(`${USERS_URL}/profile/`, {
-    credentials: "include",
-  });
+  let localData = localStorage.getItem("user") || false;
 
-  if (userRes.status === 200) {
-    user = await userRes.json();
+  if (localData) {
+    let user = JSON.parse(localData);
+    // Check if token is expired
+    if (user.accessExpires && user.accessExpires < Date.now()) {
+      localStorage.removeItem("user");
+      context.set(userContext, null);
+      // logout
+    }
     context.set(userContext, user);
   }
 }
@@ -69,23 +72,30 @@ export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
 ];
 
 export async function clientLoader({ context }: Route.LoaderArgs) {
+  const user = context.get(userContext);
+
   let cart = null;
   try {
     const cartRes = await fetch(`${CART_URL}`, { credentials: "include" });
 
     if (cartRes.status === 200) {
       cart = await cartRes.json();
+      return { cart, user };
+    }
+
+    if (cartRes.status === 204) {
+      return { cart: null, user };
     }
     return null;
   } catch (error) {}
 }
 
 export default function App({ loaderData }: Route.ComponentProps) {
-  const cart = loaderData;
+  const data = loaderData;
 
   return (
     <>
-      <Header cart={cart} />
+      <Header cart={data && data.cart} user={data && data.user} />
       <main className="h-auto sm:h-full px-20">
         <Outlet />
       </main>
