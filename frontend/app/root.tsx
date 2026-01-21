@@ -17,6 +17,8 @@ import { CART_URL, USERS_URL } from "./constants";
 
 import { userContext } from "./context";
 
+import { Toaster } from "sonner";
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -62,6 +64,7 @@ async function authMiddleware({ context }: any) {
       localStorage.removeItem("user");
       context.set(userContext, null);
       // logout
+      fetch(`${USERS_URL}/logout/`, { credentials: "include" });
     }
     context.set(userContext, user);
   }
@@ -98,6 +101,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
       <Header cart={data && data.cart} user={data && data.user} />
       <main className="h-auto sm:h-full px-20">
         <Outlet />
+        <Toaster />
       </main>
       <Footer />
     </>

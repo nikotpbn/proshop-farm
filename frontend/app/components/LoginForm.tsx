@@ -1,5 +1,7 @@
 import { Form } from "react-router";
 
+import { Button } from "~/components/ui/button";
+
 import FormInput from "~/components/FormInput";
 
 function LoginForm() {
@@ -21,9 +23,7 @@ function LoginForm() {
           label="Password"
           autoComplete="current-password"
         />
-        <button className="bg-gray-300 hover:bg-white text-black rounded-md my-2 cursor-pointer">
-          Sign In
-        </button>
+        <Button>Sign In</Button>
         <p className="text-xs">
           New Customer? <a href="/register">Register</a>
         </p>

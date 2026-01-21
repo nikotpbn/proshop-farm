@@ -7,6 +7,8 @@ import LoginForm from "~/components/LoginForm";
 import { USERS_URL } from "~/constants";
 import { userContext } from "~/context";
 
+import { toast } from "sonner";
+
 export async function clientLoader({ context }: Route.LoaderArgs) {
   const user = context.get(userContext);
   if (user) {
@@ -38,6 +40,11 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
         return redirect("/");
       }
     }
+    // Invalid credentials
+    toast.error("Login Failed", {
+      position: "top-right",
+      description: "Invalid credentials (username or password).",
+    });
   } catch (error) {
     console.log("something went wrong");
   }

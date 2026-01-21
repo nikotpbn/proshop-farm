@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Cookie
+from fastapi import APIRouter, Depends, Cookie, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -50,7 +50,7 @@ async def user_login(
 
     user = await authenticate_user(form_data.username, form_data.password)
     if not user:
-        return JSONResponse("User not found", status_code=404)
+        return JSONResponse("User not found", status_code=status.HTTP_204_NO_CONTENT)
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
