@@ -1,8 +1,10 @@
 import type { Route } from "./+types/SignIn";
 
-import { Form, redirect } from "react-router";
-import { USERS_URL } from "~/constants";
+import { redirect } from "react-router";
 
+import LoginForm from "~/components/LoginForm";
+
+import { USERS_URL } from "~/constants";
 import { userContext } from "~/context";
 
 export async function clientLoader({ context }: Route.LoaderArgs) {
@@ -42,25 +44,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 }
 
 function SignIn() {
-  return (
-    <div>
-      <Form className="flex flex-col" method="post">
-        <input
-          name="username"
-          type="text"
-          placeholder="username"
-          autoComplete="username"
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="password"
-          autoComplete="current-password"
-        />
-        <button>Login</button>
-      </Form>
-    </div>
-  );
+  return <LoginForm />;
 }
 
 export default SignIn;
