@@ -19,6 +19,8 @@ import { userContext } from "./context";
 
 import { Toaster } from "sonner";
 
+import { ThemeProvider } from "./components/theme-provider.client";
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -98,12 +100,19 @@ export default function App({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <Header cart={data && data.cart} user={data && data.user} />
-      <main className="h-auto sm:h-full px-20">
-        <Outlet />
-        <Toaster />
-      </main>
-      <Footer />
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <Header cart={data && data.cart} user={data && data.user} />
+        <main className="h-auto sm:h-full px-20">
+          <Outlet />
+          <Toaster />
+        </main>
+        <Footer />
+      </ThemeProvider>
     </>
   );
 }

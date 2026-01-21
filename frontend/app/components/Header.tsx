@@ -3,6 +3,8 @@ import type { CartItem } from "~/models/CartItem";
 import { useState } from "react";
 import { Link } from "react-router";
 
+import { ModeToggle } from "./ModeToogle";
+
 import logo from "../src/assets/logo.png";
 
 const Header = ({ cart, user }: any) => {
@@ -27,6 +29,7 @@ const Header = ({ cart, user }: any) => {
             </div>
 
             <div className="flex gap-3">
+              <ModeToggle />
               <Link
                 to="/cart"
                 className="flex gap-1 items-center hidden sm:flex"
