@@ -7,6 +7,18 @@ import { ModeToggle } from "./ModeToogle";
 
 import logo from "../src/assets/logo.png";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+
+import { Button } from "./ui/button";
+
 const Header = ({ cart, user }: any) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -22,56 +34,76 @@ const Header = ({ cart, user }: any) => {
           </Link>
 
           <div className="flex items-center">
-            <div className="sm:hidden cursor-pointer">
-              <button onClick={() => setMenuOpen(!menuOpen)}>
-                <span className="material-icons">menu</span>
-              </button>
-            </div>
-
             <div className="flex gap-3">
               <ModeToggle />
-              <Link
-                to="/cart"
-                className="flex gap-1 items-center hidden sm:flex"
-              >
-                <span className="material-icons">shopping_cart</span>
-                <span>
-                  Cart
-                  {cart && cart.cartItems.length > 0 && (
-                    <span className="bg-white text-yellow-500 px-3 py-1 border rounded-[50%]">
-                      {cart.cartItems
-                        .map((item: CartItem) => item.qty)
-                        .reduce((sum: number, qty: number) => {
-                          return sum + qty;
-                        })}
-                    </span>
-                  )}
-                </span>
-              </Link>
+              <div className="flex gap-2 hidden md:flex">
+                <Link to="/cart" className="flex gap-1 items-center">
+                  <span className="material-icons">shopping_cart</span>
+                  <span>
+                    Cart
+                    {cart && cart.cartItems.length > 0 && (
+                      <span className="bg-white text-yellow-500 px-3 py-1 border rounded-[50%]">
+                        {cart.cartItems
+                          .map((item: CartItem) => item.qty)
+                          .reduce((sum: number, qty: number) => {
+                            return sum + qty;
+                          })}
+                      </span>
+                    )}
+                  </span>
+                </Link>
 
-              <Link
-                to="/signin"
-                className="flex gap-1 items-center hidden sm:flex"
-              >
-                <span className="material-icons">person</span>
-                {user ? <span>{user.username}</span> : <span>Sign In</span>}
-              </Link>
+                <Link to="/signin" className="flex gap-1 items-center">
+                  <span className="material-icons">person</span>
+                  {user ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline">{user.username}</Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem>Profile</DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem>
+                            Log out{" "}
+                            <span className="material-icons md-16">logout</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <span>Sign In</span>
+                  )}
+                </Link>
+              </div>
+              <div className="flex md:hidden items-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      <span className="material-icons">menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem>Profile</DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem>
+                        Log out{" "}
+                        <span className="material-icons md-16">logout</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
         </div>
-
-        {menuOpen && (
-          <div className="flex flex-col py-1 px-6 gap-3 bg-yellow-500">
-            <div className="flex align-center">
-              <span className="material-icons">shopping_cart</span>
-              <span>Cart</span>
-            </div>
-            <div className="flex align-center">
-              <span className="material-icons">person</span>
-              <span>Sign In</span>
-            </div>
-          </div>
-        )}
       </nav>
     </header>
   );
