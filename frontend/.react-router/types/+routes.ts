@@ -25,12 +25,15 @@ type Pages = {
   "/signin": {
     params: {};
   };
+  "/register": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/product/:productId" | "/cart" | "/signin";
+    page: "/" | "/product/:productId" | "/cart" | "/signin" | "/register";
   };
   "pages/Landing.tsx": {
     id: "pages/Landing";
@@ -48,6 +51,10 @@ type RouteFiles = {
     id: "pages/SignIn";
     page: "/signin";
   };
+  "./pages/Register.tsx": {
+    id: "pages/Register";
+    page: "/register";
+  };
 };
 
 type RouteModules = {
@@ -56,4 +63,5 @@ type RouteModules = {
   "pages/ProductDetail": typeof import("./app/./pages/ProductDetail.tsx");
   "pages/Cart": typeof import("./app/./pages/Cart.tsx");
   "pages/SignIn": typeof import("./app/./pages/SignIn.tsx");
+  "pages/Register": typeof import("./app/./pages/Register.tsx");
 };

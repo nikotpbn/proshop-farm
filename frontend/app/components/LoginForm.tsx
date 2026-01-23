@@ -13,7 +13,7 @@ function LoginForm() {
           name="username"
           type="text"
           placeholder="Enter username"
-          label="Email Address"
+          label="Username"
           autoComplete="username"
         />
         <FormInput
