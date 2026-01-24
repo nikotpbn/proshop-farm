@@ -15,7 +15,7 @@ import Footer from "./components/Footer";
 
 import { CART_URL, USERS_URL } from "./constants";
 
-import { userContext } from "./context";
+import { userContext, cartContext } from "./context";
 
 import { Toaster } from "sonner";
 
@@ -72,27 +72,32 @@ async function authMiddleware({ context }: any) {
   }
 }
 
+async function cartMiddleware({ context }: any) {
+  let localData = localStorage.getItem("cart") || false;
+
+  if (localData) {
+    let cart = JSON.parse(localData);
+
+    if (cart.expiresIn && cart.expiresIn * 1000 < Date.now()) {
+      localStorage.removeItem("cart");
+      context.set(cartContext, null);
+      // TODO: destroy session cookie
+    }
+
+    context.set(cartContext, cart);
+  }
+}
+
 export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
   authMiddleware,
+  cartMiddleware,
 ];
 
 export async function clientLoader({ context }: Route.LoaderArgs) {
   const user = context.get(userContext);
+  const cart = context.get(cartContext);
 
-  let cart = null;
-  try {
-    const cartRes = await fetch(`${CART_URL}`, { credentials: "include" });
-
-    if (cartRes.status === 200) {
-      cart = await cartRes.json();
-      return { cart, user };
-    }
-
-    if (cartRes.status === 204) {
-      return { cart: null, user };
-    }
-    return null;
-  } catch (error) {}
+  return { user, cart };
 }
 
 export default function App({ loaderData }: Route.ComponentProps) {

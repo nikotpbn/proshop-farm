@@ -1,35 +1,36 @@
 import type { Route } from "./+types/Cart";
-import type { CartItem } from "~/models/CartItem";
 
-import { Form, Link, useFetcher, redirect } from "react-router";
+import { Link, useFetcher, redirect } from "react-router";
 
 import { CART_URL } from "~/constants";
+
+import { cartContext } from "~/context";
 
 import Loader from "~/components/Loader";
 import Message from "../components/Message";
 
-export async function clientLoader() {
-  const res = await fetch(`${CART_URL}`, { credentials: "include" });
-
-  if (res.status === 204) {
-    return null;
-  }
-
-  const cart = await res.json();
+export async function clientLoader({ context }: Route.LoaderArgs) {
+  const cart = context.get(cartContext);
   return cart;
 }
 
-export async function clientAction({ request }: Route.ClientActionArgs) {
+export async function clientAction({
+  request,
+  context,
+}: Route.ClientActionArgs) {
   const formData = await request.formData();
+  let cart = null;
   let update = formData.get("update");
   let qty = formData.get("qty") as string;
   let id = formData.get("id") as string;
 
   if (update && qty) {
-    updateCartItem(qty, id);
+    cart = await updateCartItem(qty, id);
   } else {
-    updateCartItem("0", id);
+    cart = await updateCartItem("0", id);
   }
+
+  context.set(cartContext, cart);
 }
 
 export function HydrateFallback() {
@@ -49,6 +50,8 @@ async function updateCartItem(qty: string, id: string) {
 
     if (res.status === 200) {
       const data = await res.json();
+      localStorage.setItem("cart", JSON.stringify(data.cart));
+      return data.cart;
     }
   } catch (error) {}
 }
@@ -122,7 +125,7 @@ const Cart = ({ loaderData }: Route.ComponentProps) => {
             <div className="text-xl font-semibold mb-2">
               Subtotal (
               {cart.cartItems
-                .map((item: CartItem) => item.qty)
+                .map((item: any) => item.qty)
                 .reduce((sum: number, qty: number) => {
                   return sum + qty;
                 })}

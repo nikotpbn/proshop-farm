@@ -1,5 +1,6 @@
 import uuid
-import json
+from calendar import timegm
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Request, Cookie, status
@@ -21,7 +22,6 @@ async def get_cart(
     cart_session: Annotated[uuid.UUID | None, Cookie()] = None,
 ):
     if not cart_session:
-        content = {"msg": "Cart not found"}
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     try:
         r = get_redis_conn()
@@ -34,7 +34,6 @@ async def get_cart(
 
 @router.post("/add")
 async def add_item(
-    request: Request,
     cart_item: CartItem,
     cart_session: Annotated[uuid.UUID | None, Cookie()] = None,
 ):
@@ -49,6 +48,10 @@ async def add_item(
             items_price = cart_item.qty * cart_item.price
             shipping_price = 0 if items_price > 100 else 10
             tax_price = 0.15 * items_price
+            expires_delta = timedelta(hours=6)
+            expire = datetime.now(timezone.utc) + expires_delta
+            # Convert datetime to a intDate value in known time-format claims
+            expires_in = timegm(expire.utctimetuple())
 
             data = {
                 "cartItems": [
@@ -65,6 +68,7 @@ async def add_item(
                 "taxPrice": tax_price,
                 "shippingPrice": shipping_price,
                 "totalPrice": items_price + shipping_price + tax_price,
+                "expiresIn": expires_in,
             }
 
             r.json().set(f"cart:{cart_session}", "$", data)
@@ -77,11 +81,9 @@ async def add_item(
             content = {"msg": "Cart session created, item was added", "cart": data}
             response = JSONResponse(content=content)
             response.set_cookie(
-                "cart_session",
-                cart_session,
-                expires=21600,
-                samesite=None,
-                secure=True,
+                key="cart_session",
+                value=cart_session,
+                expires=expires_delta,
                 httponly=True,
             )
 
@@ -180,14 +182,16 @@ async def update_remove_item(
             )
 
             r.json().set(f"cart:{cart_session}", "$", data)
-            content = {"msg": "Item updated", "qty": item["qty"]}
+            content = {"msg": "Item updated", "cart": data}
             return JSONResponse(content=content)
 
         else:
             content = {"msg": "Item not found in cart"}
-            return JSONResponse(content=content)
+            return JSONResponse(content=content, status_code=status.HTTP_204_NO_CONTENT)
 
     except Exception as e:
         print(e)
         content = {"msg": "Something went wrong"}
-        return JSONResponse(content=content)
+        return JSONResponse(
+            content=content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

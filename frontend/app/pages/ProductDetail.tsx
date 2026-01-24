@@ -18,18 +18,19 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
   const formData = await request.formData();
-  const data = Object.fromEntries(formData);
+  const payload = Object.fromEntries(formData);
 
   const res = await fetch(`${CART_URL}/add/`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
     headers: {
       "Content-Type": "application/json",
     },
   });
 
-  const cart = await res.json();
+  const data = await res.json();
+  localStorage.setItem("cart", JSON.stringify(data.cart));
 }
 
 export function HydrateFallback() {
