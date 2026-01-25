@@ -12,7 +12,7 @@ import { toast } from "sonner";
 export async function clientLoader({ context }: Route.LoaderArgs) {
   const user = context.get(userContext);
   if (user) {
-    throw redirect("/");
+    return redirect("/");
   }
 }
 
