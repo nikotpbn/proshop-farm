@@ -1,6 +1,7 @@
 import type { Route } from "./+types/Cart";
 
 import { Link, useFetcher, redirect } from "react-router";
+import { Button } from "~/components/ui/button";
 
 import { CART_URL } from "~/constants";
 
@@ -135,10 +136,11 @@ const Cart = ({ loaderData }: Route.ComponentProps) => {
           </div>
 
           <hr />
+
           <div className="flex p-2 justify-center">
-            <button className="bg-yellow-500 rounded-sm p-2 text-nowrap">
-              Proceed to Checkout
-            </button>
+            <Button className="bg-yellow-500 hover:bg-yellow-500 text-white">
+              <Link to="/shipping">Proceed to Checkout</Link>
+            </Button>
           </div>
         </div>
       </div>

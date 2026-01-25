@@ -7,5 +7,6 @@ export default [
   route("signin", "./pages/SignIn.tsx"),
   route("register", "./pages/Register.tsx"),
   route("shipping", "./pages/Shipping.tsx"),
-  route("*", "./pages/NotFound.tsx")
+  route("payment", "./pages/Payment.tsx"),
+  route("*", "./pages/NotFound.tsx"),
 ] satisfies RouteConfig;
